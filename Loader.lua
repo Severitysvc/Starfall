@@ -1,20 +1,22 @@
 local Supported = {
 	["99 Nights"] = {
 		Main = {
-			Source = "",
-			CreatorID = 123456789,
+			Source = "https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/99%20Nights%20in%20the%20forest/Source.lua",
+			CreatorID = 6042520,
 		},
 	},
 
 	["Doors Lobby"] = {
 		Main = {
-			Source = "",
-			PlaceID = 6839171747,
+			Source = "https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Doors/Source.lua",
+			CreatorID = 3049798,
 		},
+	},
 
-		Lobby = {
-			Source = "",
-			PlaceID = 6516141723,
+	["Grow a garden"] = {
+		Main = {
+			Source = "https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Grow%a%garden/Source.lua",
+			CreatorID = 35789249,
 		},
 	},
 }
