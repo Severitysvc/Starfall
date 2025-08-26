@@ -3,7 +3,7 @@ Module.__index = Module
 
 local Utility = loadstring(
 	game:HttpGet(
-		"https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Grow%a%garden/Utility.lua"
+		"https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Grow%20a%20garden/Utility.lua"
 	)
 )()
 

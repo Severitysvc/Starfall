@@ -15,7 +15,7 @@ local Supported = {
 
 	["Grow a garden"] = {
 		Main = {
-			Source = "https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Grow%a%garden/Source.lua",
+			Source = "https://raw.githubusercontent.com/Severitysvc/Starfall/refs/heads/main/Profiles/Grow%20a%20garden/Source.lua",
 			CreatorID = 35789249,
 		},
 	},
