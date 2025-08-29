@@ -4,6 +4,7 @@ local TweenService = game:GetService("TweenService")
 local Blur = Instance.new("BlurEffect", game:GetService("Lighting"))
 Blur.Size = 0
 local Correction = Instance.new("ColorCorrectionEffect", game:GetService("Lighting"))
+Correction.Enabled = false
 
 -- StarterGui.Exploiting Guis.Starfall.Loading
 G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
