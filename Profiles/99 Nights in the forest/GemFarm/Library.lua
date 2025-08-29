@@ -1,6 +1,6 @@
 local Library = {}
 
-Library["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+Library["1"] = Instance.new("ScreenGui", game:GetService("CoreGui"))
 Library["1"]["Name"] = [[99 nights gem]]
 Library["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
 
