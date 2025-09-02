@@ -65,7 +65,7 @@ return function(Source, Key)
 
 	local function load_script(key)
 		if key == Key then
-			writefile("Starfall/key-check.txt", key)
+			writefile("key-check.txt", key)
 			WindUI:Notify({
 				Title = "Key Is Valid",
 				Content = "Enjoy using Starfall.",
@@ -120,8 +120,8 @@ return function(Source, Key)
 		end,
 	})
 
-	if isfile("Starfall/key-check.txt") then
-		local saved = readfile("Starfall/key-check.txt")
+	if isfile("key-check.txt") then
+		local saved = readfile("key-check.txt")
 		script_key = saved
 		load_script(saved)
 	end
