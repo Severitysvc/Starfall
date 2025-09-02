@@ -12,6 +12,10 @@ local PlaceID = game.PlaceId
 
 local Key = "Starfall" --// I will change this later with some actual security. Join our discord :pray:
 
+if isfile(Repo .. "/key-check.txt") then
+		delfolder(Repo)
+end
+
 if not isfolder(Repo) then
 	makefolder(Repo)
 end
