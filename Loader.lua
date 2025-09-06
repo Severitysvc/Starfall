@@ -10,46 +10,99 @@ local RawBase = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. 
 local CreatorID = game.CreatorId
 local PlaceID = game.PlaceId
 
-local Key = "Starfall"
+local Key = "Starfall" --// I will change this later with some actual security. Join our discord :pray:
 
-local function LoadAsset(Asset)
-    local Url = RawBase .. Asset
-    local Response = Request({
-        Url = Url,
-        Method = "GET",
-    })
-    assert(Response.Success or Response.StatusCode == 200, "Failed to fetch: " .. Url)
-    return loadstring(Response.Body), Response.Body
+if isfile(Repo .. "/key-check.txt") then
+	delfolder(Repo)
 end
 
-local function GetGithubVersion()
-    local Fn, Body = LoadAsset(VersionFile)
-    return Fn(), Body
+if not isfolder(Repo) then
+	makefolder(Repo)
 end
 
-shared.Hq29sS9aa = LoadAsset
+local function DownloadAsset(Asset, Force)
+	local Path = Repo .. "/" .. Asset
+	local Parts = {}
 
-local GithubVersion, VersionBody = GetGithubVersion()
-local Installed = "None"
+	for Part in Asset:gmatch("[^/]+") do
+		table.insert(Parts, Part)
+	end
 
-LoadAsset("Loader.lua")()
-LoadAsset(VersionFile)()
+	if #Parts > 1 then
+		local PartPath = Repo .. "/" .. Parts[1]
+		if not isfolder(PartPath) then
+			makefolder(PartPath)
+		end
+		for i = 2, #Parts - 1 do
+			PartPath = PartPath .. "/" .. Parts[i]
+			if not isfolder(PartPath) then
+				makefolder(PartPath)
+			end
+		end
+	end
 
-local Supported = LoadAsset("Build/Support.lua")()
-local KeySystem = LoadAsset("Library/KeySystem/Source.lua")()
-LoadAsset("Library/Loading Animation/Source.lua")()()
+	if not Asset:match("%.%w+$") then
+		return
+	end
+
+	if not Force and isfile(Path) then
+		return loadfile(Path)
+	end
+
+	local Url = RawBase .. Asset
+	local Response = Request({
+		Url = Url,
+		Method = "GET",
+	})
+
+	assert(Response.Success or Response.StatusCode == 200, "Failed to download: " .. Url)
+	writefile(Path, Response.Body)
+
+	return loadfile(Path)
+end
+
+local function GetInstalledVersion()
+	if isfile(Repo .. "/" .. VersionFile) then
+		return readfile(Repo .. "/" .. VersionFile)
+	end
+
+	return "None"
+end
+
+shared.Hq29sS9aa = DownloadAsset
+
+local Installed = GetInstalledVersion()
+local GithubVersion = DownloadAsset(VersionFile, true)()
+
+if Installed == "None" then
+	DownloadAsset("Loader.lua", true)
+	DownloadAsset(VersionFile, true)
+else
+	if Installed ~= GithubVersion then
+		for _, FilePath in pairs(listfiles(Repo)) do
+			local FileName = FilePath:match("[^/\\]+$")
+			DownloadAsset(FileName, true)
+		end
+	end
+end
+
+local Supported = DownloadAsset("Build/Support.lua")()
+local KeySystem = DownloadAsset("Library/KeySystem/Source.lua")()
+DownloadAsset("Library/Loading Animation/Source.lua")()()
 
 for _, Data in pairs(Supported) do
-    if Data.Main.CreatorID and Data.Main.CreatorID == CreatorID then
-        KeySystem(Data.Main.Source, Key)
-        return
-    end
-    if Data.Main.PlaceID and Data.Main.PlaceID == PlaceID then
-        KeySystem(Data.Main.Source, Key)
-        return
-    end
-    if Data.Lobby and Data.Lobby.PlaceID and Data.Lobby.PlaceID == PlaceID then
-        KeySystem(Data.Lobby.Source, Key)
-        return
-    end
+	if Data.Main.CreatorID and Data.Main.CreatorID == CreatorID then
+		KeySystem(Data.Main.Source, Key)
+		return
+	end
+
+	if Data.Main.PlaceID and Data.Main.PlaceID == PlaceID then
+		KeySystem(Data.Main.Source, Key)
+		return
+	end
+
+	if Data.Lobby and Data.Lobby.PlaceID and Data.Lobby.PlaceID == PlaceID then
+		KeySystem(Data.Lobby.Source, Key)
+		return
+	end
 end
