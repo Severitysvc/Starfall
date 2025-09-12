@@ -1,29 +1,42 @@
 return {
-	["99 Nights in the forest"] = {
+	{
+		Identity = "9120313-102131-23310923",
+		Source = "6042520/Source",
 		Main = {
-			Source = "Bundle/Profiles/99 Nights in the forest/Source.lua",
-			CreatorID = 6042520,
+			CreatorId = 6042520,
 		},
+
+		Dependencies = "None",
 	},
 
-	["Doors"] = {
+	{
+		Identity = "012313-31293310-2391230",
+		Source = "35815907/Source",
 		Main = {
-			Source = "Bundle/Profiles/Doors/Source.lua",
-			CreatorID = 3049798,
+			CreatorId = 35815907,
 		},
+
+		Dependencies = { "require" },
+		Exclude = { "Xeno", "Solara" },
 	},
 
-	["Steal a brainrot"] = {
+	{
+		Identity = "2031230-1239812-9293810",
+		Source = "36015593/Source",
 		Main = {
-			Source = "Bundle/Profiles/Steal a brainrot/Source.lua",
-			CreatorID = 35815907,
+			CreatorId = 36015593,
 		},
+
+		Dependencies = "None",
 	},
 
-	["Grow a garden"] = {
+	{
+		Identity = "1023813-720312937-42039123",
+		Source = "3049798",
 		Main = {
-			Source = "Bundle/Profiles/Grow a garden/Source.lua",
-			CreatorID = 35789249,
+			CreatorId = 3049798,
 		},
+
+		Dependencies = "None",
 	},
 }

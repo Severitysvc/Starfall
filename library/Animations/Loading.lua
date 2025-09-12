@@ -1,5 +1,5 @@
-return function()
-	local LoadingScreen = Instance.new("ScreenGui")
+task.spawn(function()
+	local LoadingScreen = Instance.new("ScreenGui", game:GetService("CoreGui"))
 	local Depth_1 = Instance.new("ImageLabel")
 	local Header_1 = Instance.new("Frame")
 	local Starfall_1 = Instance.new("TextLabel")
@@ -17,7 +17,7 @@ return function()
 	local TweenService = game:GetService("TweenService")
 
 	LoadingScreen.Name = "LoadingScreen"
-	LoadingScreen.Parent = gethui and gethui() or game:GetService("CoreGui")
+	--// LoadingScreen.Parent = gethui and gethui() or game:GetService("CoreGui")
 	LoadingScreen.IgnoreGuiInset = true
 
 	Depth_1.Name = "Depth"
@@ -234,4 +234,4 @@ return function()
 	Blur:Destroy()
 	ColorCorrection:Destroy()
 	LoadingScreen:Destroy()
-end
+end)

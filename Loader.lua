@@ -1,104 +1,89 @@
-local Request = request or http_request or (syn and syn.request)
-assert(Request, "No request function found")
-
-local Repo = "Starfall"
 local Owner = "Severitysvc"
+local Repo = "Starfall-Dev"
+local Version
 
-local VersionFile = "Version.lua"
-local RawBase = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. "/refs/heads/main/"
+local Raw = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. "/main/"
 
-local CreatorID = game.CreatorId
-local PlaceID = game.PlaceId
+local Executor = identifyexecutor and identifyexecutor() or getexecutorname and getexecutorname() or "none"
+local PlaceId = game.PlaceId
+local CreatorId = game.CreatorId
 
-local Key = "Starfall" --// I will change this later with some actual security. Join our discord :pray:
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
 if not isfolder(Repo) then
 	makefolder(Repo)
 end
 
-local function DownloadAsset(Asset, Force)
-	local Path = Repo .. "/" .. Asset
-	local Parts = {}
+local function ImportAsset(Asset, Extension)
+	local AssetExtension = Extension or ".lua"
+	local RawAsset = Raw .. Asset .. AssetExtension
 
-	for Part in Asset:gmatch("[^/]+") do
-		table.insert(Parts, Part)
-	end
+	local Success, Response = pcall(function()
+		return game:HttpGet(RawAsset)
+	end)
 
-	if #Parts > 1 then
-		local PartPath = Repo .. "/" .. Parts[1]
-		if not isfolder(PartPath) then
-			makefolder(PartPath)
+	if Success then
+		local Scs, Rps = pcall(function()
+			return loadstring(Response)()
+		end)
+		if Scs then
+			return Rps
+		else
+			warn("Failed to get asset: ", Asset, Rps)
 		end
-		for i = 2, #Parts - 1 do
-			PartPath = PartPath .. "/" .. Parts[i]
-			if not isfolder(PartPath) then
-				makefolder(PartPath)
+	else
+		warn("Failed to load asset: ", Asset, Response)
+	end
+end
+
+local function DiscoverModule(Module, Force)
+	local Base = "src/bundle/profiles/" .. Module
+	if Force then
+		ImportAsset(Base)
+	else
+		return Base
+	end
+end
+
+local function CheckDependencies(Table, Callback)
+	if Table.Exclude and #Table.Exclude > 0 then
+		for _, Excluded in next, Table.Exclude do
+			if Excluded == Executor then
+				LocalPlayer:Kick("Unsupported Excutor")
+				return
 			end
 		end
 	end
 
-	if not Asset:match("%.%w+$") then
-		return
-	end
-
-	if not Force and isfile(Path) then
-		return loadfile(Path)
-	end
-
-	local Url = RawBase .. Asset
-	local Response = Request({
-		Url = Url,
-		Method = "GET",
-	})
-
-	assert(Response.Success or Response.StatusCode == 200, "Failed to download: " .. Url)
-	writefile(Path, Response.Body)
-
-	return loadfile(Path)
+	Callback()
 end
 
-local function GetInstalledVersion()
-	if isfile(Repo .. "/" .. VersionFile) then
-		return readfile(Repo .. "/" .. VersionFile)
-	end
+Version = ImportAsset("Version")
+getgenv().StarfallImport = ImportAsset
 
-	return "None"
-end
+local KeySystem = ImportAsset("Library/KeySystem/Source")
+local LoadingAnimation = ImportAsset("library/Animations/Loading")
 
-shared.Hq29sS9aa = DownloadAsset
+local Supported = ImportAsset("build/Support")
+assert(Supported, "no support handler found. contact severitysvc about this issue")
 
-local Installed = GetInstalledVersion()
-local GithubVersion = DownloadAsset(VersionFile, true)()
-
-if Installed == "None" then
-	DownloadAsset("Loader.lua", true)
-	DownloadAsset(VersionFile, true)
-else
-	if Installed ~= GithubVersion then
-		for _, FilePath in pairs(listfiles(Repo)) do
-			local FileName = FilePath:match("[^/\\]+$")
-			DownloadAsset(FileName, true)
+for _, Data in next, Supported do
+	if Data.Main then
+		if Data.Main.CreatorId and Data.Main.CreatorId == CreatorId then
+			CheckDependencies(Data, function()
+				KeySystem(DiscoverModule(Data.Source), "Starfall")
+			end)
+		elseif Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+			CheckDependencies(Data, function()
+				KeySystem(DiscoverModule(Data.Source), "Starfall")
+			end)
+		elseif Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
+			CheckDependencies(Data, function()
+				KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
+			end)
 		end
 	end
 end
 
-local Supported = DownloadAsset("Build/Support.lua")()
-local KeySystem = DownloadAsset("Library/KeySystem/Source.lua")()
-DownloadAsset("Library/Loading Animation/Source.lua")()()
-
-for _, Data in pairs(Supported) do
-	if Data.Main.CreatorID and Data.Main.CreatorID == CreatorID then
-		KeySystem(Data.Main.Source, Key)
-		return
-	end
-
-	if Data.Main.PlaceID and Data.Main.PlaceID == PlaceID then
-		KeySystem(Data.Main.Source, Key)
-		return
-	end
-
-	if Data.Lobby and Data.Lobby.PlaceID and Data.Lobby.PlaceID == PlaceID then
-		KeySystem(Data.Lobby.Source, Key)
-		return
-	end
-end
+print("Starfall is running on version " .. tostring(Version))
