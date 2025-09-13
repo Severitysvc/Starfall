@@ -1,5 +1,5 @@
 local Owner = "Severitysvc"
-local Repo = "Starfall-Dev"
+local Repo = "Starfall"
 local Version
 
 local Raw = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. "/main/"
