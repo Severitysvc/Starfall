@@ -1,5 +1,5 @@
 local Owner = "Severitysvc"
-local Repo = "Starfall-Dev"
+local Repo = "Starfall"
 local Version
 
 local Raw = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. "/main/"
@@ -27,6 +27,7 @@ local function ImportAsset(Asset, Extension)
 		local Scs, Rps = pcall(function()
 			return loadstring(Response)()
 		end)
+		
 		if Scs then
 			return Rps
 		else
@@ -38,12 +39,12 @@ local function ImportAsset(Asset, Extension)
 end
 
 local function DiscoverModule(Module, Force)
-	local Base = "src/bundle/profiles/" .. Module .. ".lua"
+	local Base = "src/bundle/profiles/" .. Module 
 
 	if Force then
 		ImportAsset(Base)
 	else
-		return Base
+		return Base 
 	end
 end
 
@@ -63,7 +64,7 @@ end
 Version = ImportAsset("Version")
 getgenv().StarfallImport = ImportAsset
 
-local KeySystem = ImportAsset("Library/KeySystem/Source")
+local KeySystem = ImportAsset("library/KeySystem/Source")
 local LoadingAnimation = ImportAsset("library/Animations/Loading")
 
 task.delay(2.5, function()
