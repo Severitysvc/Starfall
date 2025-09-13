@@ -62,7 +62,7 @@ end
 Version = ImportAsset("Version")
 getgenv().StarfallImport = ImportAsset
 
-local KeySystem = ImportAsset("Library/KeySystem/Source")
+local KeySystem = ImportAsset("library/KeySystem/Source")
 local LoadingAnimation = ImportAsset("library/Animations/Loading")
 
 local Supported = ImportAsset("build/Support")
