@@ -38,7 +38,7 @@ local function ImportAsset(Asset, Extension)
 end
 
 local function DiscoverModule(Module, Force)
-	local Base = "src/bundle/profiles/" .. Module
+	local Base = "src/bundle/profiles/" .. Module .. ".lua"
 
 	if Force then
 		ImportAsset(Base)
