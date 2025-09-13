@@ -65,29 +65,30 @@ getgenv().StarfallImport = ImportAsset
 local KeySystem = ImportAsset("library/KeySystem/Source")
 local LoadingAnimation = ImportAsset("library/Animations/Loading")
 
-local Supported = ImportAsset("build/Support")
-assert(Supported, "no support handler found. contact severitysvc about this issue")
-
-for _, Data in next, Supported do
-	if Data.Main then
-		if Data.Main.CreatorId and Data.Main.CreatorId == CreatorId then
-			CheckDependencies(Data, function()
-				KeySystem(DiscoverModule(Data.Source), "Starfall")
-			end)
+task.delay(2.5, function()
+	local Supported = ImportAsset("build/Support")
+	assert(Supported, "no support handler found. contact severitysvc about this issue")
+	
+	for _, Data in next, Supported do
+		if Data.Main then
+			if Data.Main.CreatorId and Data.Main.CreatorId == CreatorId then
+				CheckDependencies(Data, function()
+					KeySystem(DiscoverModule(Data.Source), "Starfall")
+				end)
+			end
+			
+			if Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+				CheckDependencies(Data, function()
+					KeySystem(DiscoverModule(Data.Source), "Starfall")
+				end)
+			end
 		end
-		
-		if Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+	
+		if Data.Lobby and Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
 			CheckDependencies(Data, function()
-				KeySystem(DiscoverModule(Data.Source), "Starfall")
+				KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
 			end)
 		end
 	end
-
-	if Data.Lobby and Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
-		CheckDependencies(Data, function()
-			KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
-		end)
-	end
-end
-
+end)
 print("Starfall is running on version " .. tostring(Version))
