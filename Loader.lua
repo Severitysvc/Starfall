@@ -1,5 +1,5 @@
 local Owner = "Severitysvc"
-local Repo = "Starfall"
+local Repo = "Starfall-Dev"
 local Version
 
 local Raw = "https://raw.githubusercontent.com/" .. Owner .. "/" .. Repo .. "/main/"
@@ -39,6 +39,7 @@ end
 
 local function DiscoverModule(Module, Force)
 	local Base = "src/bundle/profiles/" .. Module
+
 	if Force then
 		ImportAsset(Base)
 	else
@@ -62,10 +63,18 @@ end
 Version = ImportAsset("Version")
 getgenv().StarfallImport = ImportAsset
 
-local KeySystem = ImportAsset("library/KeySystem/Source")
+local KeySystem = ImportAsset("Library/KeySystem/Source")
 local LoadingAnimation = ImportAsset("library/Animations/Loading")
 
 task.delay(2.5, function()
+	if CustomProfile then
+		KeySystem("src/bundle/customs/" .. CustomProfile .. "/Source", "Starfall")
+				
+		print("Loaded custom profile: " .. CustomProfile)
+		print("Starfall is running on version " .. tostring(Version))
+		return
+	end
+	
 	local Supported = ImportAsset("build/Support")
 	assert(Supported, "no support handler found. contact severitysvc about this issue")
 	
@@ -75,20 +84,17 @@ task.delay(2.5, function()
 				CheckDependencies(Data, function()
 					KeySystem(DiscoverModule(Data.Source), "Starfall")
 				end)
-			end
-			
-			if Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+			elseif Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
 				CheckDependencies(Data, function()
 					KeySystem(DiscoverModule(Data.Source), "Starfall")
 				end)
+			elseif Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
+				CheckDependencies(Data, function()
+					KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
+				end)
 			end
-		end
-	
-		if Data.Lobby and Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
-			CheckDependencies(Data, function()
-				KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
-			end)
 		end
 	end
 end)
+
 print("Starfall is running on version " .. tostring(Version))
