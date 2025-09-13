@@ -74,15 +74,19 @@ for _, Data in next, Supported do
 			CheckDependencies(Data, function()
 				KeySystem(DiscoverModule(Data.Source), "Starfall")
 			end)
-		elseif Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+		end
+		
+		if Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
 			CheckDependencies(Data, function()
 				KeySystem(DiscoverModule(Data.Source), "Starfall")
 			end)
-		elseif Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
-			CheckDependencies(Data, function()
-				KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
-			end)
 		end
+	end
+
+	if Data.Lobby and Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
+		CheckDependencies(Data, function()
+			KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
+		end)
 	end
 end
 
