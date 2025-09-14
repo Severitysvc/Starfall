@@ -78,7 +78,7 @@ task.delay(2.5, function()
 	local Supported = ImportAsset("build/Support")
 	assert(Supported, "no support handler found. contact severitysvc about this issue")
 	
-	for _, Data in next, Supported do
+	for _, Data in pairs(Supported) do
 		if Data.Main then
 			if Data.Main.CreatorId and Data.Main.CreatorId == CreatorId then
 				CheckDependencies(Data, function()
