@@ -27,7 +27,7 @@ local function ImportAsset(Asset, Extension)
 		local Scs, Rps = pcall(function()
 			return loadstring(Response)()
 		end)
-		
+
 		if Scs then
 			return Rps
 		else
@@ -39,12 +39,11 @@ local function ImportAsset(Asset, Extension)
 end
 
 local function DiscoverModule(Module, Force)
-	local Base = "src/bundle/profiles/" .. Module 
-
+	local Base = "src/bundle/profiles/" .. Module
 	if Force then
 		ImportAsset(Base)
 	else
-		return Base 
+		return Base
 	end
 end
 
@@ -52,7 +51,7 @@ local function CheckDependencies(Table, Callback)
 	if Table.Exclude and #Table.Exclude > 0 then
 		for _, Excluded in next, Table.Exclude do
 			if Excluded == Executor then
-				LocalPlayer:Kick("Unsupported Excutor")
+				LocalPlayer:Kick("Unsupported Executor")
 				return
 			end
 		end
@@ -85,15 +84,18 @@ task.delay(2.5, function()
 				CheckDependencies(Data, function()
 					KeySystem(DiscoverModule(Data.Source), "Starfall")
 				end)
-			elseif Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
+			end
+			if Data.Main.PlaceId and Data.Main.PlaceId == PlaceId then
 				CheckDependencies(Data, function()
 					KeySystem(DiscoverModule(Data.Source), "Starfall")
 				end)
-			elseif Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
-				CheckDependencies(Data, function()
-					KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
-				end)
 			end
+		end
+
+		if Data.Lobby and Data.Lobby.PlaceId and Data.Lobby.PlaceId == PlaceId then
+			CheckDependencies(Data, function()
+				KeySystem(DiscoverModule(Data.Lobby.Source), "Starfall")
+			end)
 		end
 	end
 end)
