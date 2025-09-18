@@ -1,1 +1,1 @@
-print("api initialized succesfully")
+terminated
